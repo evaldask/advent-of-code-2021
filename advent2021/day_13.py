@@ -25,7 +25,7 @@ def parse(data: List[str]) -> Tuple[COORDS, FOLDS]:
     return set(coords), folds
 
 
-def fold(coords: COORDS, folds: FOLDS, show=False):
+def fold(coords: COORDS, folds: FOLDS, show=False) -> int:
     for axis, split_point in folds:
         new_coords = []
 
@@ -46,11 +46,8 @@ def fold(coords: COORDS, folds: FOLDS, show=False):
         range_x = max(coords, key=lambda x: x[0])[0] + 1
         range_y = max(coords, key=lambda x: x[1])[1] + 1
         for y in range(range_y):
-            row = ""
-            for x in range(range_x):
-                add = "#" if (x, y) in coords else " "
-                row = row + add
-            print(row)
+            row = ["#" if (x, y) in coords else " " for x in range(range_x)]
+            print("".join(row))
 
     return len(coords)
 
