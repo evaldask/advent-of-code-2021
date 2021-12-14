@@ -1,6 +1,6 @@
 from collections import Counter
 from typing import List, Tuple
-from typing import Counter as typedCounter
+from typing import Counter as TypedCounter
 
 
 def parse(data: List[str]) -> List[List[int]]:
@@ -73,7 +73,7 @@ def basins(data: List[List[int]]) -> int:
     for i, (x, y) in enumerate(coords):
         fill(x, y, (i + 1) * -1)
 
-    c: typedCounter[int] = Counter()
+    c: TypedCounter[int] = Counter()
     for row in data:
         c.update(row)
 

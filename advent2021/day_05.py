@@ -1,6 +1,6 @@
 from collections import Counter
 from typing import List, Tuple
-from typing import Counter as typedCounter
+from typing import Counter as TypedCounter
 
 
 TUPLE_INT = Tuple[int, int]
@@ -25,7 +25,7 @@ def parse(data: List[str]) -> List[PAIR]:
 
 
 def vents_map(data: List[PAIR]) -> int:
-    mapped: typedCounter[TUPLE_INT] = Counter()
+    mapped: TypedCounter[TUPLE_INT] = Counter()
 
     for ((x1, y1), (x2, y2)) in data:
         if x1 != x2 and y1 != y2:
@@ -39,7 +39,7 @@ def vents_map(data: List[PAIR]) -> int:
 
 
 def diagonal(data: List[PAIR]):
-    mapped: typedCounter[TUPLE_INT] = Counter()
+    mapped: TypedCounter[TUPLE_INT] = Counter()
 
     for ((x1, y1), (x2, y2)) in data:
         dir1 = 1 if max(x1, x2) == x2 else -1
