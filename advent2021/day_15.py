@@ -1,3 +1,4 @@
+import heapq
 from typing import List, Tuple, Generator
 
 
@@ -26,9 +27,6 @@ class Map:
     def finish(self) -> COORDS:
         return self.lim_y - 1, self.lim_y - 1
 
-    def start(self) -> COORDS:
-        return 0, 0
-
     def cost(self, x: int, y: int) -> int:
         add = x // self.bound_x + y // self.bound_y
         coord_x = x % self.bound_x
@@ -39,29 +37,22 @@ class Map:
 
 
 def navigate(map: Map) -> int:
-    paths = {}
-    costs = {map.start(): 0}
-    to_visit = [map.start()]
+    seen = {(0, 0)}
+    to_visit = [(0, 0, 0)]
 
     while to_visit:
-        pos = min(to_visit, key=lambda x: costs.get(x, 1_000_000_000))
-        to_visit.remove(pos)
+        cost, x, y = heapq.heappop(to_visit)
 
-        if pos == map.finish():
-            break
+        if (x, y) == map.finish():
+            return cost
 
-        for npos in map.neighbours(*pos):
-            current_cost = costs[pos] + map.cost(*npos)
-            if current_cost >= costs.get(npos, 1_000_000_000):
-                continue
+        for nx, ny in map.neighbours(x, y):
+            current_cost = cost + map.cost(nx, ny)
+            if (nx, ny) not in seen:
+                heapq.heappush(to_visit, (current_cost, nx, ny))
+                seen.add((nx, ny))
 
-            paths[npos] = pos
-            costs[npos] = current_cost
-
-            if npos not in to_visit:
-                to_visit.append(npos)
-
-    return costs[map.finish()]
+    return -1
 
 
 if __name__ == "__main__":
