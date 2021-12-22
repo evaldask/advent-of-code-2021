@@ -16,6 +16,8 @@ def parse(data: List[str]) -> Tuple[Set[int], Set[Tuple[int, int]]]:
 
 def process(image: Set[Tuple[int, int]], commands: Set[int], iterations: int) -> int:
     coords = [-1, 0, 1]
+    alternating = 0 in commands and 511 not in commands
+
     for cycle in range(iterations):
         new_img = set()
 
@@ -29,14 +31,14 @@ def process(image: Set[Tuple[int, int]], commands: Set[int], iterations: int) ->
                 for x, y in itertools.product(coords, repeat=2):
                     if x1 <= i + x <= x2 and y1 <= j + y <= y2:
                         index = index << 1 | ((i + x, j + y) in image)
-                    else:
+                    elif alternating is True:
                         index = index << 1 | (cycle % 2 == 1)
 
                 if index in commands:
                     new_img.add((i, j))
 
         image = new_img
-
+    print(image)
     return len(image)
 
 

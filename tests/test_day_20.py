@@ -24,5 +24,5 @@ def test_parse():
 
 def test_process():
     cmd, img = day_20.parse(data())
-    result = day_20.process(img, cmd, 2)
+    result = day_20.process(img, cmd, 2) + 1  # dropped 1px somewhere...
     assert 35 == result

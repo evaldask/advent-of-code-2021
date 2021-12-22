@@ -1,8 +1,13 @@
-from itertools import cycle
 from functools import lru_cache
 from collections import Counter
+from itertools import cycle, product
+
 from typing import List
 from typing import Counter as TypedCounter
+
+
+def position(pos: int, roll: int) -> int:
+    return (pos + roll - 1) % 10 + 1
 
 
 def dice(lower: int = 1, upper: int = 100):
@@ -21,7 +26,7 @@ def play(players: List[int]) -> int:
             rolled = next(rolling_dice) + next(rolling_dice) + next(rolling_dice)
             dice_rolls += 3
 
-            players[i] = (players[i] + rolled - 1) % 10 + 1
+            players[i] = position(players[i], rolled)
             scores[i] += players[i]
 
             if scores[i] >= 1000:
@@ -31,38 +36,21 @@ def play(players: List[int]) -> int:
 
 
 def dirac(player1: int, player2: int) -> int:
-    def dice_roll():
-        for i in range(1, 4):
-            for j in range(1, 4):
-                for k in range(1, 4):
-                    yield i + j + k
-
-    def position(p, r): return (p + r - 1) % 10 + 1
-
     @lru_cache(maxsize=1_000_000)
-    def play(pos1: int, pos2: int, score1: int, score2: int, player_1_moves: bool):
-        if score1 >= 21:
-            return Counter([1])
-
+    def play(pos1: int, pos2: int, score1: int, score2: int, p1: int):
         if score2 >= 21:
-            return Counter([-1])
+            return Counter([p1])
 
         counter: TypedCounter[int] = Counter()
-        if player_1_moves is True:
-            for roll in all_rolls:
-                pos = position(pos1, roll)
-                outcome = play(pos, pos2, score1 + pos, score2, False)
-                counter += outcome
-        else:
-            for roll in all_rolls:
-                pos = position(pos2, roll)
-                outcome = play(pos1, pos, score1, score2 + pos, True)
-                counter += outcome
+        for roll in all_rolls:
+            pos = position(pos1, roll)
+            outcome = play(pos2, pos, score2, score1 + pos, p1 * -1)
+            counter += outcome
 
         return counter
 
-    all_rolls = [x for x in dice_roll()]
-    result = play(player1, player2, 0, 0, True)
+    all_rolls = [sum(x) for x in product(range(1, 4), repeat=3)]
+    result = play(player1, player2, 0, 0, 1)
     return result.most_common()[0][1]
 
 
