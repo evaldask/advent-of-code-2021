@@ -107,21 +107,20 @@ def available_moves(room: str) -> Generator[Tuple, None, None]:
 
 def solve(room: str) -> int:
     costs: Dict[str, int] = {}
-    to_visit = [(0, 0, room)]
+    to_visit = [(0, room)]
 
     while to_visit:
-        spent, exp, explore = heapq.heappop(to_visit)
-        spent =- exp
+        spent, explore = heapq.heappop(to_visit)
 
         if solved(explore):
             return costs[explore]
 
-        for possible_move, energy, expected in available_moves(explore):
+        for possible_move, energy in available_moves(explore):
             if costs.get(possible_move, 1_000_000) < energy + spent:
                 continue
 
             costs[possible_move] = energy + spent
-            heapq.heappush(to_visit, (energy + spent + expected, expected, possible_move))
+            heapq.heappush(to_visit, (energy + spent, possible_move))
 
     return -1
 
